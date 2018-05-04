@@ -9,5 +9,13 @@ namespace TheDeserter
     class TileMap
     {
 
+        public Tile[,] tileMap;
+
+
+        public void CheckCollisions ()
+        {
+
+        }
+
     }
 }

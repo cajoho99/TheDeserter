@@ -40,6 +40,8 @@ namespace TheDeserter
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            World world = new World();
+            world.LoadWorld("levelExample");
             // TODO: use this.Content to load your game content here
         }
 
