@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:../../GameLibrary/bin/Windows Phone/Debug/GameLibrary.dll 
 
 #---------------------------------- Content ---------------------------------#
-
 

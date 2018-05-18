@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Xml.Linq;
 
 namespace TheDeserter
 {
@@ -41,7 +42,8 @@ namespace TheDeserter
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             World world = new World();
-            world.LoadWorld("levelExample");
+            world.LoadWorld("levelExample", Content);
+            
             // TODO: use this.Content to load your game content here
         }
 
