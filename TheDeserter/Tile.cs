@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,13 @@ namespace TheDeserter
             set { _isSolid = value; }
         }
 
+        public Tile(Vector2 pos, Texture2D tex, Rectangle sourceRect)
+        {
+            Position = pos;
+            Texture = tex;
+            SourceRectangle = sourceRect;
+        }
+
         public bool CheckCollision(Rectangle characterHitbox)
         {
             bool xOverlap = SourceRectangle.X < (characterHitbox.X + characterHitbox.Width) && 
@@ -36,6 +44,11 @@ namespace TheDeserter
             }
             return false;
 
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Texture, Position, SourceRectangle, Color.White);
         }
 
     }

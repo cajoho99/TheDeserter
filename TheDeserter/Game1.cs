@@ -13,6 +13,8 @@ namespace TheDeserter
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private World world;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -41,8 +43,8 @@ namespace TheDeserter
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            World world = new World();
-            world.LoadWorld("levelExample", Content);
+            world = new World();
+            world.LoadWorld("level1", Content);
             
             // TODO: use this.Content to load your game content here
         }
@@ -79,7 +81,9 @@ namespace TheDeserter
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            world.DrawLayers();
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
