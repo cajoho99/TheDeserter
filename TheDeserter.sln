@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheDeserter", "TheDeserter\TheDeserter.csproj", "{5F37F74E-BDEA-4A10-9F7D-8F52F8E85D05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyXMLData", "MyXMLData\MyXMLData.csproj", "{2981412F-C503-421D-A357-9D87CBE95C00}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,14 +19,6 @@ Global
 		{5F37F74E-BDEA-4A10-9F7D-8F52F8E85D05}.Release|Any CPU.ActiveCfg = Release|x86
 		{5F37F74E-BDEA-4A10-9F7D-8F52F8E85D05}.Release|x86.ActiveCfg = Release|x86
 		{5F37F74E-BDEA-4A10-9F7D-8F52F8E85D05}.Release|x86.Build.0 = Release|x86
-		{2981412F-C503-421D-A357-9D87CBE95C00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2981412F-C503-421D-A357-9D87CBE95C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2981412F-C503-421D-A357-9D87CBE95C00}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2981412F-C503-421D-A357-9D87CBE95C00}.Debug|x86.Build.0 = Debug|Any CPU
-		{2981412F-C503-421D-A357-9D87CBE95C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2981412F-C503-421D-A357-9D87CBE95C00}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2981412F-C503-421D-A357-9D87CBE95C00}.Release|x86.ActiveCfg = Release|Any CPU
-		{2981412F-C503-421D-A357-9D87CBE95C00}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
