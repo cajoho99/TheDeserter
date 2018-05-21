@@ -31,6 +31,7 @@ namespace TheDeserter
         {
             // TODO: Add your initialization logic here
 
+
             base.Initialize();
         }
 
@@ -45,7 +46,7 @@ namespace TheDeserter
 
             world = new World();
             world.LoadWorld("level1", Content);
-            
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -82,7 +83,7 @@ namespace TheDeserter
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            world.DrawLayers();
+            world.DrawLayers(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

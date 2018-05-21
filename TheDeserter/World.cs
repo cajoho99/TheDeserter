@@ -43,6 +43,12 @@ namespace TheDeserter
         {
             get { return _sourcePositions; }
         }
+
+        public World()
+        {
+            Layers = new List<TileMap>();
+        }
+
         public void LoadWorld(string tilemap, ContentManager Content)
         {
             tileset = Content.Load<Texture2D>("industrial");
@@ -67,14 +73,20 @@ namespace TheDeserter
 
             foreach (var tml in tileMapLayers)
             {
-                if(tml.Attribute("name").Value != "collision")
+                if(tml.Attribute("name").Value == "collision")
                 {
 
                 }
                 else
                 {
                     Layers.Add(new TileMap(tml, tileset));
+
                 }
+            }
+
+            foreach (TileMap tm in Layers)
+            {
+                tm.LoadData();
             }
         }
 

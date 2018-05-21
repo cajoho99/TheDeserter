@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace TheDeserter
 {
     class CollisionTileMap : TileMap
     {
-        public CollisionTileMap(XElement layerData) : base(layerData)
+        public CollisionTileMap(XElement layerData, Texture2D texture) : base(layerData, texture)
         {
 
         }
