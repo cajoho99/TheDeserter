@@ -58,7 +58,7 @@ namespace TheDeserter
                     LayerTileMap[x, y] = new Tile(
                         new Vector2(x * 16, y * 16),
                         tileset,
-                        new Rectangle((int)World.SourcePositions[intID[x, y]].X, (int)World.SourcePositions[intID[x, y]].Y, 16, 16)
+                        new Rectangle((int)World.SourcePositions[intID[x, y]].Y, (int)World.SourcePositions[intID[x, y]].X, 16, 16)
                         );
                 }
             }

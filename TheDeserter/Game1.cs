@@ -13,12 +13,16 @@ namespace TheDeserter
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private Color backgroundColor;
+
+
         private World world;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
         }
 
         /// <summary>
@@ -43,9 +47,17 @@ namespace TheDeserter
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            RenderTarget2D target = new RenderTarget2D(GraphicsDevice, 1920, 1080);
+            GraphicsDevice.SetRenderTarget(target);
 
             world = new World();
             world.LoadWorld("level1", Content);
+            graphics.PreferredBackBufferHeight = World.MapHeight * 16;
+            graphics.PreferredBackBufferWidth = World.MapWidth * 16;
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
+
+            backgroundColor = new Color(29, 33, 45);
 
             // TODO: use this.Content to load your game content here
         }
@@ -69,6 +81,7 @@ namespace TheDeserter
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -80,8 +93,8 @@ namespace TheDeserter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            GraphicsDevice.Clear(backgroundColor);
+            GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin();
             world.DrawLayers(spriteBatch);
             spriteBatch.End();
