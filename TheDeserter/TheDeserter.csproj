@@ -44,6 +44,7 @@
     <StartupObject>TheDeserter.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AnimatedSprite.cs" />
     <Compile Include="CollisionTileMap.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />

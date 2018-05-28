@@ -25,7 +25,7 @@ namespace TheDeserter
             set { _isSolid = value; }
         }
 
-        public Tile(Vector2 pos, Texture2D tex, Rectangle sourceRect)
+        public Tile(Vector2 pos, Texture2D tex, Rectangle sourceRect, bool isSolid) 
         {
             Position = pos;
             Texture = tex;

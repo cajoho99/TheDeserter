@@ -15,6 +15,7 @@ namespace TheDeserter
     {
         public List<TileMap> Layers;
         public Texture2D tileset;
+        public CollisionTileMap CollisionTileMap;
 
         private static int _mapWidth;
         private static int _mapHeight;
@@ -62,9 +63,9 @@ namespace TheDeserter
 
             int key = 0;
             _sourcePositions = new Vector2[TileCount];
-            for(int x = 0; x < TileCount / Columns; x++)
+            for(int y = 0; y < TileCount / Columns; y++)
             {
-                for(int y = 0; y < Columns; y++)
+                for(int x = 0; x < Columns; x++)
                 {
                     _sourcePositions[key] = new Vector2(x * 16, y * 16);
                     key++;
@@ -73,9 +74,9 @@ namespace TheDeserter
 
             foreach (var tml in tileMapLayers)
             {
-                if(tml.Attribute("name").Value == "collision")
+                if(tml.Attribute("name").Value == "Collisions")
                 {
-
+                    CollisionTileMap = new CollisionTileMap(tml, tileset);
                 }
                 else
                 {
@@ -88,6 +89,7 @@ namespace TheDeserter
             {
                 tm.LoadData();
             }
+            CollisionTileMap.LoadData();
         }
 
         public void DrawLayers(SpriteBatch spriteBatch)

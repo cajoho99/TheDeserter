@@ -12,6 +12,8 @@ namespace TheDeserter
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        RenderTarget2D target; 
+
 
         private Color backgroundColor;
 
@@ -35,7 +37,6 @@ namespace TheDeserter
         {
             // TODO: Add your initialization logic here
 
-
             base.Initialize();
         }
 
@@ -47,14 +48,11 @@ namespace TheDeserter
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            RenderTarget2D target = new RenderTarget2D(GraphicsDevice, 1920, 1080);
-            GraphicsDevice.SetRenderTarget(target);
-
             world = new World();
             world.LoadWorld("level1", Content);
-            graphics.PreferredBackBufferHeight = World.MapHeight * 16;
-            graphics.PreferredBackBufferWidth = World.MapWidth * 16;
-            graphics.IsFullScreen = true;
+            target = new RenderTarget2D(GraphicsDevice, World.MapWidth * 16, World.MapHeight * 16);
+            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferWidth = 1920;
             graphics.ApplyChanges();
 
             backgroundColor = new Color(29, 33, 45);
@@ -93,10 +91,14 @@ namespace TheDeserter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.SetRenderTarget(target);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
             GraphicsDevice.Clear(backgroundColor);
-            GraphicsDevice.SetRenderTarget(null);
-            spriteBatch.Begin();
             world.DrawLayers(spriteBatch);
+            spriteBatch.End();
+            GraphicsDevice.SetRenderTarget(null);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            spriteBatch.Draw(target, new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);

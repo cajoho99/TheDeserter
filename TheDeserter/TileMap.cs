@@ -12,10 +12,10 @@ namespace TheDeserter
     class TileMap
     {
 
-        private Tile[,] _layerTileMap;
-        private XContainer layerData;
-        private string _name;
-        private Texture2D tileset;
+        protected Tile[,] _layerTileMap;
+        protected XContainer layerData;
+        protected string _name;
+        protected Texture2D tileset;
 
         public Tile[,] LayerTileMap
         {
@@ -35,20 +35,12 @@ namespace TheDeserter
             tileset = texture;
         }
 
-        public void LoadData()
+
+
+        public virtual void LoadData()
         {
-            string rawData = layerData.Element("data").Value;
-            string[] splitArray = rawData.Split(',');
 
-            int[,] intID = new int[World.MapWidth, World.MapHeight];
-
-            for(int x = 0; x < World.MapWidth; x++)
-            {
-                for(int y = 0; y < World.MapHeight; y++)
-                {
-                    intID[x, y] = int.Parse(splitArray[x + y * World.MapWidth]);
-                }
-            }
+            int[,] intID = ParseData(this.layerData);
 
             LayerTileMap = new Tile[World.MapWidth, World.MapHeight];
             for(int x = 0; x < World.MapWidth; x++)
@@ -58,13 +50,39 @@ namespace TheDeserter
                     LayerTileMap[x, y] = new Tile(
                         new Vector2(x * 16, y * 16),
                         tileset,
-                        new Rectangle((int)World.SourcePositions[intID[x, y]].Y, (int)World.SourcePositions[intID[x, y]].X, 16, 16)
+                        new Rectangle((int)World.SourcePositions[intID[x, y]].X, (int)World.SourcePositions[intID[x, y]].Y, 16, 16),
+                        false
                         );
                 }
             }
         }
 
-        public void DrawTilemap(SpriteBatch spriteBatch)
+        protected int[,] ParseData(XContainer data)
+        {
+            string rawData = data.Element("data").Value;
+            string[] splitArray = rawData.Split(',');
+
+            int[,] intID = new int[World.MapWidth, World.MapHeight];
+
+            for (int x = 0; x < World.MapWidth; x++)
+            {
+                for (int y = 0; y < World.MapHeight; y++)
+                {
+                    if (int.Parse(splitArray[x + y * World.MapWidth]) - 1 < 0)
+                    {
+                        intID[x, y] = 0;
+                    }
+                    else
+                    {
+                        intID[x, y] = int.Parse(splitArray[x + y * World.MapWidth]) - 1;
+                    }
+                }
+            }
+
+            return intID;
+        }
+
+        public virtual void DrawTilemap(SpriteBatch spriteBatch)
         {
             for(int x = 0; x < World.MapWidth; x++)
             {

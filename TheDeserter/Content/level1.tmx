@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="16" height="8" tilewidth="16" tileheight="16" infinite="0" nextobjectid="1">
+<map version="1.0" tiledversion="1.1.4" orientation="orthogonal" renderorder="right-down" width="16" height="8" tilewidth="16" tileheight="16" infinite="0" nextobjectid="1">
  <tileset firstgid="1" name="industrial" tilewidth="16" tileheight="16" tilecount="1024" columns="32">
   <image source="industrial.png" width="512" height="512"/>
  </tileset>
@@ -25,6 +25,18 @@
 13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,
 13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,
 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
+</data>
+ </layer>
+ <layer name="Collisions" width="16" height="8" visible="0">
+  <data encoding="csv">
+1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,
+1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,1024,
+1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,1024,
+1024,1024,1024,1024,1024,1024,0,0,0,0,0,0,0,0,0,1024,
+1024,0,0,0,0,1024,0,0,0,0,1024,1024,1024,1024,0,1024,
+1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1024,
+1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1024,
+1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024,1024
 </data>
  </layer>
 </map>
