@@ -27,9 +27,17 @@ namespace TheDeserter
         }
         #endregion
 
+        public Sprite(Texture2D texture, Vector2 position)
+        {
+            Texture = texture;
+            Position = position;
+        }
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Position, Color.White);
         }
+
+        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime) { }
     }
 }

@@ -12,8 +12,9 @@ namespace TheDeserter
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        RenderTarget2D target; 
+        RenderTarget2D target;
 
+        Player mainCharacter;
 
         private Color backgroundColor;
 
@@ -50,10 +51,17 @@ namespace TheDeserter
             spriteBatch = new SpriteBatch(GraphicsDevice);
             world = new World();
             world.LoadWorld("level1", Content);
+
+           
+            
             target = new RenderTarget2D(GraphicsDevice, World.MapWidth * 16, World.MapHeight * 16);
-            graphics.PreferredBackBufferHeight = 1080;
-            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 400;
+            graphics.PreferredBackBufferWidth = 800;
             graphics.ApplyChanges();
+
+
+
+            mainCharacter = new Player(Content.Load<Texture2D>("playerIdle"), Vector2.Zero);
 
             backgroundColor = new Color(29, 33, 45);
 
@@ -79,6 +87,10 @@ namespace TheDeserter
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            InputManager.Instance.Update();
+
+            mainCharacter.MovementInput();
+            mainCharacter.Move(gameTime);
             
             // TODO: Add your update logic here
 
@@ -95,10 +107,11 @@ namespace TheDeserter
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
             GraphicsDevice.Clear(backgroundColor);
             world.DrawLayers(spriteBatch);
+            mainCharacter.Draw(spriteBatch, gameTime);
             spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-            spriteBatch.Draw(target, new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height), Color.White);
+            spriteBatch.Draw(target, new Rectangle(0, 0, /* GraphicsDevice.DisplayMode.Width*/ 800, /* GraphicsDevice.DisplayMode.Height*/ 400), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
