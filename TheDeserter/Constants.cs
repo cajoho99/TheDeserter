@@ -11,5 +11,6 @@ namespace TheDeserter
     {
         public static readonly Vector2 Gravity = new Vector2(0, 9.82f);
         public static readonly int GridSize = 16;
+        public static readonly float FrictionForce = 1600f;
     }
 }

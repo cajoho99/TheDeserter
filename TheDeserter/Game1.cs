@@ -61,7 +61,7 @@ namespace TheDeserter
 
 
 
-            mainCharacter = new Player(Content.Load<Texture2D>("playerIdle"), Vector2.Zero);
+            mainCharacter = new Player(Content.Load<Texture2D>("playerIdle"), Content.Load<Texture2D>("runningPlayer"), Vector2.Zero);
 
             backgroundColor = new Color(29, 33, 45);
 

@@ -69,6 +69,7 @@
   <ItemGroup>
     <Content Include="Content\industrial.png" />
     <Content Include="Content\playerIdle.png" />
+    <Content Include="Content\runningPlayer.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
