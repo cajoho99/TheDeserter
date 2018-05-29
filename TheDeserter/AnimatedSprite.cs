@@ -11,8 +11,8 @@ namespace TheDeserter
     class AnimatedSprite : Sprite
     {
         private int _currentFrame = 0;
-        private float animationTimer = 500f;
-        private const float TIMER = 500f;
+        protected float animationTimer = 500f;
+        protected float TIMER = 500f;
 
         public int CurrentFrame { get => _currentFrame; set => _currentFrame = value; }
 

@@ -41,12 +41,8 @@ namespace TheDeserter.Content
         public virtual void Move(GameTime gameTime)
         {
             oldPosition = Position;
-            Velocity += Constants.Gravity * (float)gameTime.ElapsedGameTime.Milliseconds / 1000;
+            Velocity += Constants.Gravity * 100 * (float)gameTime.ElapsedGameTime.Milliseconds / 1000;
             Position += Velocity * (float)gameTime.ElapsedGameTime.Milliseconds / 1000;
-
-
-            
-
         }
 
         

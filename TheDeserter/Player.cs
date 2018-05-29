@@ -15,6 +15,9 @@ namespace TheDeserter
         private Vector2 _tilePosition;
         private float _jumpHeight;
         private float reactivity;
+        SpriteEffects textureDirection = SpriteEffects.None;
+        private bool isGrounded = true;
+        private bool hasJumped = false;
 
         Texture2D idleTexture;
         Texture2D runningTexture;
@@ -32,15 +35,19 @@ namespace TheDeserter
 
         public Player(Texture2D idleTexture, Texture2D runningTexture, Vector2 position) : base(idleTexture, position)
         {
-            MovementSpeed = 175f;
+            MovementSpeed = 150f;
             reactivity = 0.5f;
+            JumpHeight = 200f;
             this.idleTexture = idleTexture;
             this.runningTexture = runningTexture;
         }
 
         public void Jump()
         {
-
+            if (!hasJumped && isGrounded)
+            {
+                Velocity = new Vector2(Velocity.X, -JumpHeight);
+            }
         }
 
         public override void Move(GameTime gameTime)
@@ -53,18 +60,28 @@ namespace TheDeserter
                 Velocity = Velocity - new Vector2(Constants.FrictionForce * Velocity.X / MovementSpeed * (float)gameTime.ElapsedGameTime.Milliseconds / 1000, 0);
 
             }
+            if(Math.Abs(Velocity.X) < 0.5f)
+            {
+                Velocity = new Vector2(0, Velocity.Y);
+            }
 
             if(Velocity.X > 0)
             {
                 Texture = runningTexture;
+                textureDirection = SpriteEffects.None;
+                TIMER = 100f;
+
             }
             else if(Velocity.X < 0)
             {
                 Texture = runningTexture;
+                textureDirection = SpriteEffects.FlipHorizontally;
+                TIMER = 100f;
             }
             else
             {
                 Texture = idleTexture;
+                TIMER = 500f;
             }
         }
 
@@ -104,6 +121,7 @@ namespace TheDeserter
                 Velocity *= new Vector2(Math.Abs(MovementSpeed / Velocity.X), 1);
             }
         }
+
         private void CheckWorldConstraints()
         {
             if (Position.X < 0 || Position.X > (World.MapWidth - 1) * Constants.GridSize)
@@ -119,7 +137,11 @@ namespace TheDeserter
             }
         }
 
-
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            Animate(gameTime);
+            spriteBatch.Draw(Texture, Position, new Rectangle(16 * CurrentFrame, 0, 16, 16), Color.White, 0, Vector2.Zero, 1, textureDirection, 0);
+        }
 
     }
 }
