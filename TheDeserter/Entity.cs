@@ -15,6 +15,7 @@ namespace TheDeserter.Content
         private float _movementSpeed;
         private float _health;
         protected Vector2 oldPosition;
+        protected Rectangle _hitbox;
 
 
         public Vector2 Velocity
@@ -32,10 +33,15 @@ namespace TheDeserter.Content
             get { return _health; }
             set { _health = value; }
         }
+        public Rectangle Hitbox
+        {
+            get { return _hitbox; }
+            set { _hitbox = value; }
+        }
 
         public Entity(Texture2D texture, Vector2 position) : base(texture, position)
         {
-
+            Hitbox = new Rectangle((int)Position.X, (int)Position.Y, Constants.TileSize, Constants.TileSize);
         }
 
         public virtual void Move(GameTime gameTime)
@@ -45,6 +51,11 @@ namespace TheDeserter.Content
             Position += Velocity * (float)gameTime.ElapsedGameTime.Milliseconds / 1000;
         }
 
+
+        public virtual void Update(GameTime gameTime)
+        {
+            Hitbox = new Rectangle((int)Position.X, (int)Position.Y, Constants.TileSize, Constants.TileSize);
+        }
         
 
         public void TakeDamage(float damage)

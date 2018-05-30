@@ -44,9 +44,11 @@ namespace TheDeserter
 
         public void Jump()
         {
-            if (!hasJumped && isGrounded)
+            if (!hasJumped )
             {
                 Velocity = new Vector2(Velocity.X, -JumpHeight);
+                hasJumped = true;
+                isGrounded = false;
             }
         }
 
@@ -54,10 +56,13 @@ namespace TheDeserter
         {
             base.Move(gameTime);
 
+            TilePosition = Position / Constants.TileSize;
+
             CheckWorldConstraints();
+            CheckNeighbouringTiles();
             if (!InputManager.Instance.KeyDown(Keys.A, Keys.D, Keys.Left, Keys.Right))
             {
-                Velocity = Velocity - new Vector2(Constants.FrictionForce * Velocity.X / MovementSpeed * (float)gameTime.ElapsedGameTime.Milliseconds / 1000, 0);
+                Velocity -= new Vector2(Constants.FrictionForce * Velocity.X / MovementSpeed * (float)gameTime.ElapsedGameTime.Milliseconds / 1000, 0);
 
             }
             if(Math.Abs(Velocity.X) < 0.5f)
@@ -124,17 +129,62 @@ namespace TheDeserter
 
         private void CheckWorldConstraints()
         {
-            if (Position.X < 0 || Position.X > (World.MapWidth - 1) * Constants.GridSize)
+            if (Position.X < 0 || Position.X > (World.MapWidth - 1) * Constants.TileSize)
             {
                 Position = new Vector2(oldPosition.X, Position.Y);
                 Velocity = new Vector2(0, Velocity.Y);
             }
 
-            if (Position.Y < 0 || Position.Y > (World.MapHeight - 1) * Constants.GridSize)
+            if (Position.Y < 0 || Position.Y > (World.MapHeight - 1) * Constants.TileSize)
             {
+                if(Position.Y > (World.MapHeight - 1) * Constants.TileSize)
+                {
+                    isGrounded = true;
+                }
                 Position = new Vector2(Position.X, oldPosition.Y);
                 Velocity = new Vector2(Velocity.X, 0);
             }
+        }
+
+        private void CheckNeighbouringTiles()
+        {
+            for(int i = (int)Math.Floor(TilePosition.X) - 1; i <= (int)Math.Floor(TilePosition.X) + 1; i++)
+            {
+                for(int j = (int)Math.Floor(TilePosition.Y) - 1; j <= (int)Math.Floor(TilePosition.Y) + 1; j++)
+                {
+                    if (!((i == (int)Math.Floor(TilePosition.X)) && (j == (int)Math.Floor(TilePosition.Y))))
+                    {
+                        if(!(i < 0 || j < 0 || i > (World.MapWidth - 1) || j > (World.MapHeight - 1)))
+                        {
+                            if (World.CollisionTileMap.LayerTileMap[i, j].CheckCollision(Position))
+                            {
+                                if (World.CollisionTileMap.LayerTileMap[(int)Math.Floor(TilePosition.X), (int)Math.Floor(TilePosition.Y) + 1].CheckCollision(Position))
+                                {
+                                    isGrounded = true;
+                                }
+                                Position = new Vector2(oldPosition.X, Position.Y);
+                                Velocity = new Vector2(0, Velocity.Y);
+                            }
+                            if (World.CollisionTileMap.LayerTileMap[i, j].CheckCollision(Position))
+                            {
+                                 Position = new Vector2(Position.X, oldPosition.Y);
+                                 Velocity = new Vector2(Velocity.X, 0);
+
+                            }
+                           
+                        }
+                    }                    
+                }
+            }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+
+            if (isGrounded && hasJumped)
+                hasJumped = false;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

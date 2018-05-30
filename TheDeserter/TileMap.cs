@@ -93,7 +93,7 @@ namespace TheDeserter
             }
         }
 
-        public void CheckCollisions ()
+        public void CheckCollisions(Vector2 position)
         {
             
         }

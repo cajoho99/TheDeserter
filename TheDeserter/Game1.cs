@@ -61,7 +61,7 @@ namespace TheDeserter
 
 
 
-            mainCharacter = new Player(Content.Load<Texture2D>("playerIdle"), Content.Load<Texture2D>("runningPlayer"), Vector2.Zero);
+            mainCharacter = new Player(Content.Load<Texture2D>("playerIdle"), Content.Load<Texture2D>("runningPlayer"), new Vector2(2, 2) * Constants.TileSize);
 
             backgroundColor = new Color(29, 33, 45);
 
@@ -91,6 +91,7 @@ namespace TheDeserter
 
             mainCharacter.MovementInput();
             mainCharacter.Move(gameTime);
+            mainCharacter.Update(gameTime);
             
             // TODO: Add your update logic here
 

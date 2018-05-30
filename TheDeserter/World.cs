@@ -13,9 +13,9 @@ namespace TheDeserter
 {
     class World
     {
-        public List<TileMap> Layers;
+        public static List<TileMap> Layers;
         public Texture2D tileset;
-        public CollisionTileMap CollisionTileMap;
+        public static CollisionTileMap CollisionTileMap;
 
         private static int _mapWidth;
         private static int _mapHeight;
