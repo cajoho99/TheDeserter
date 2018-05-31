@@ -19,6 +19,9 @@ namespace TheDeserter
         private bool isGrounded = true;
         private bool hasJumped = false;
 
+        private float LEDGETIMER = 500f;
+        private float ledgeTimer;
+
         Texture2D idleTexture;
         Texture2D runningTexture;
 
@@ -37,20 +40,32 @@ namespace TheDeserter
         {
             MovementSpeed = 150f;
             reactivity = 0.5f;
-            JumpHeight = 200f;
+            JumpHeight = 330f;
             this.idleTexture = idleTexture;
             this.runningTexture = runningTexture;
+            ledgeTimer = LEDGETIMER;
         }
 
         public void Jump()
         {
-            if (!hasJumped )
+            if (!hasJumped)
             {
                 Velocity = new Vector2(Velocity.X, -JumpHeight);
                 hasJumped = true;
                 isGrounded = false;
             }
         }
+        public void JumpReleased()
+        {
+            if (hasJumped)
+            {
+                if(Velocity.Y < 0)
+                {
+                    Velocity = new Vector2(Velocity.X, 0);
+                }
+            }
+        }
+
 
         public override void Move(GameTime gameTime)
         {
@@ -59,7 +74,7 @@ namespace TheDeserter
             TilePosition = Position / Constants.TileSize;
 
             CheckWorldConstraints();
-            CheckNeighbouringTiles();
+            CheckNeighbouringTiles(gameTime);
             if (!InputManager.Instance.KeyDown(Keys.A, Keys.D, Keys.Left, Keys.Right))
             {
                 Velocity -= new Vector2(Constants.FrictionForce * Velocity.X / MovementSpeed * (float)gameTime.ElapsedGameTime.Milliseconds / 1000, 0);
@@ -120,6 +135,10 @@ namespace TheDeserter
             {
                 Jump();
             }
+            if (InputManager.Instance.KeyReleased(Keys.Space))
+            {
+                JumpReleased();
+            }
 
             if(Math.Abs(Velocity.X) > MovementSpeed)
             {
@@ -140,15 +159,27 @@ namespace TheDeserter
                 if(Position.Y > (World.MapHeight - 1) * Constants.TileSize)
                 {
                     isGrounded = true;
+                    ledgeTimer = LEDGETIMER;
                 }
                 Position = new Vector2(Position.X, oldPosition.Y);
                 Velocity = new Vector2(Velocity.X, 0);
             }
         }
 
-        private void CheckNeighbouringTiles()
+        private void CheckNeighbouringTiles(GameTime gameTime)
         {
-            for(int i = (int)Math.Floor(TilePosition.X) - 1; i <= (int)Math.Floor(TilePosition.X) + 1; i++)
+            if (World.CollisionTileMap.LayerTileMap[(int)Math.Floor(TilePosition.X), (int)Math.Floor(TilePosition.Y) + 1].CheckCollision(Position))
+            {
+                isGrounded = true;
+                ledgeTimer = LEDGETIMER;
+            }
+            else
+            {
+                ledgeTimer -= gameTime.ElapsedGameTime.Milliseconds;
+                if(ledgeTimer <= 0)
+                    isGrounded = false;
+            }
+            for (int i = (int)Math.Floor(TilePosition.X) - 1; i <= (int)Math.Floor(TilePosition.X) + 1; i++)
             {
                 for(int j = (int)Math.Floor(TilePosition.Y) - 1; j <= (int)Math.Floor(TilePosition.Y) + 1; j++)
                 {
@@ -156,19 +187,16 @@ namespace TheDeserter
                     {
                         if(!(i < 0 || j < 0 || i > (World.MapWidth - 1) || j > (World.MapHeight - 1)))
                         {
-                            if (World.CollisionTileMap.LayerTileMap[i, j].CheckCollision(Position))
-                            {
-                                if (World.CollisionTileMap.LayerTileMap[(int)Math.Floor(TilePosition.X), (int)Math.Floor(TilePosition.Y) + 1].CheckCollision(Position))
-                                {
-                                    isGrounded = true;
-                                }
+                            if (World.CollisionTileMap.LayerTileMap[i, j].CheckCollision(new Vector2(Position.X, oldPosition.Y)))
+                            {  
                                 Position = new Vector2(oldPosition.X, Position.Y);
                                 Velocity = new Vector2(0, Velocity.Y);
                             }
-                            if (World.CollisionTileMap.LayerTileMap[i, j].CheckCollision(Position))
+                            if (World.CollisionTileMap.LayerTileMap[i, j].CheckCollision(new Vector2(oldPosition.X, Position.Y)))
                             {
-                                 Position = new Vector2(Position.X, oldPosition.Y);
-                                 Velocity = new Vector2(Velocity.X, 0);
+                                
+                                Position = new Vector2(Position.X, oldPosition.Y);
+                                Velocity = new Vector2(Velocity.X, 0);
 
                             }
                            
@@ -183,8 +211,11 @@ namespace TheDeserter
             base.Update(gameTime);
 
 
+
             if (isGrounded && hasJumped)
                 hasJumped = false;
+            else if (!isGrounded)
+                hasJumped = true;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
