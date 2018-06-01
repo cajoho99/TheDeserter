@@ -10,6 +10,14 @@ namespace TheDeserter
     /// </summary>
     public class Game1 : Game
     {
+        #region Enumerations
+        public enum GameState
+        {
+            Running,
+            MainMenu
+        };
+        #endregion
+
         #region Variables
         //The main graphics device manager in the game
         GraphicsDeviceManager graphics;
@@ -17,6 +25,7 @@ namespace TheDeserter
         SpriteBatch spriteBatch;
         //The target image that is rendered to
         RenderTarget2D target;
+        RenderTarget2D mainMenuTarget;
 
         //The main character player object
         Player mainCharacter;
@@ -30,6 +39,11 @@ namespace TheDeserter
         //The game world
         private World world;
 
+        //The current Game state
+        public GameState gameState;
+
+        //Main menu
+        MainMenu mainMenu;
         #endregion
         /// <summary>
         /// Constructor for the main game object
@@ -53,6 +67,8 @@ namespace TheDeserter
             form.Location = new System.Drawing.Point(0, 0);
             form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 
+            gameState = GameState.MainMenu;
+
             base.Initialize();
         }
 
@@ -64,6 +80,12 @@ namespace TheDeserter
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            //Initialize main menu
+            mainMenu = new MainMenu(Content);
+
+
+
             //Initializing the World
             world = new World();
             world.LoadWorld("level2", Content);
@@ -71,6 +93,7 @@ namespace TheDeserter
            
             //Setting the render target
             target = new RenderTarget2D(GraphicsDevice, World.MapWidth * 16, World.MapHeight * 16);
+            mainMenuTarget = new RenderTarget2D(GraphicsDevice, mainMenu.MenuSize.Width, mainMenu.MenuSize.Height);
             //Changing the window size
             graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
@@ -107,19 +130,27 @@ namespace TheDeserter
         {
             //Exits the game on esc...
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+                gameState = GameState.MainMenu;
 
             //Update the Input manager
             InputManager.Instance.Update();
 
-            //Update the main character
-            mainCharacter.MovementInput();
-            mainCharacter.Move(gameTime);
-            mainCharacter.Update(gameTime);
+            //Only update character and camera if the game is running
+            if(gameState == GameState.Running)
+            {
+                //Update the main character
+                mainCharacter.MovementInput();
+                mainCharacter.Move(gameTime);
+                mainCharacter.Update(gameTime);
 
-            //Update the camera
-            mainCamera.Update(GraphicsDevice);
-            
+                //Update the camera
+                mainCamera.Update(GraphicsDevice);
+            }
+            else if(gameState == GameState.MainMenu)
+            {
+                mainMenu.Update(this);
+            }
+
             base.Update(gameTime);
         }
 
@@ -129,22 +160,49 @@ namespace TheDeserter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            //Drawing to the image
-            GraphicsDevice.SetRenderTarget(target);
-            // Draw with the camera
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, mainCamera.Transform); 
-            GraphicsDevice.Clear(backgroundColor);
-            world.DrawLayers(spriteBatch); // Draw the world
-            mainCharacter.Draw(spriteBatch, gameTime); //Draw the main character
-            spriteBatch.End();
-            GraphicsDevice.SetRenderTarget(null);
+            if(gameState == GameState.Running)
+            {
+                //Drawing to the image
+                GraphicsDevice.SetRenderTarget(target);
+                // Draw with the camera
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, mainCamera.Transform);
+                GraphicsDevice.Clear(backgroundColor);
+                world.DrawLayers(spriteBatch); // Draw the world
+                mainCharacter.Draw(spriteBatch, gameTime); //Draw the main character
+                spriteBatch.End();
+                GraphicsDevice.SetRenderTarget(null);
 
-            //Draw the background color
-            GraphicsDevice.Clear(backgroundColor);
-            //Draw the target to the screen
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-            spriteBatch.Draw(target, new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height), Color.White);
-            spriteBatch.End();
+                //Draw the background color
+                GraphicsDevice.Clear(backgroundColor);
+                //Draw the target to the screen
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+                spriteBatch.Draw(target, new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height), Color.White);
+                spriteBatch.End();
+            }
+            else if(gameState == GameState.MainMenu)
+            {
+                //Drawing to the image
+                GraphicsDevice.SetRenderTarget(mainMenuTarget);
+                // Draw with the camera
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+                GraphicsDevice.Clear(backgroundColor);
+                mainMenu.Draw(spriteBatch);
+                spriteBatch.End();
+                GraphicsDevice.SetRenderTarget(null);
+
+                //Draw the background color
+                GraphicsDevice.Clear(backgroundColor);
+                //Draw the target to the screen
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+                spriteBatch.Draw(mainMenuTarget, new Rectangle(
+                    (GraphicsDevice.DisplayMode.Width - mainMenu.MenuSize.Width) / 2, 
+                    (GraphicsDevice.DisplayMode.Height - mainMenu.MenuSize.Height) / 2,
+                    mainMenu.MenuSize.Width, 
+                    mainMenu.MenuSize.Height), 
+                    Color.White);
+                spriteBatch.End();
+            }
+            
 
             base.Draw(gameTime);
         }
