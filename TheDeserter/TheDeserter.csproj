@@ -45,6 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AnimatedSprite.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="CollisionTileMap.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Entity.cs" />
@@ -63,6 +64,8 @@
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -78,6 +81,7 @@
     <None Include="Content\level1.tmx">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Content\Level2.tmx" />
     <None Include="Content\loadTest.tmx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

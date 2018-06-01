@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +13,20 @@ namespace TheDeserter
 {
     class Player : Entity
     {
+        #region Singleton
+        private static Player _instance;
+        public static Player Instance
+        {
+            get
+            {
+
+                return _instance;
+            }
+        }
+        #endregion
+
         private Vector2 _tilePosition;
-        private float _jumpHeight;
+        private float _jumpStrength;
         private float reactivity;
         SpriteEffects textureDirection = SpriteEffects.None;
         private bool isGrounded = true;
@@ -30,27 +43,28 @@ namespace TheDeserter
             get { return _tilePosition; }
             set { _tilePosition = value; }
         }
-        public float JumpHeight
+        public float JumpStrength
         {
-            get { return _jumpHeight; }
-            set { _jumpHeight = value; }
+            get { return _jumpStrength; }
+            set { _jumpStrength = value; }
         }
 
         public Player(Texture2D idleTexture, Texture2D runningTexture, Vector2 position) : base(idleTexture, position)
         {
             MovementSpeed = 150f;
             reactivity = 0.5f;
-            JumpHeight = 330f;
+            JumpStrength = 400f;
             this.idleTexture = idleTexture;
             this.runningTexture = runningTexture;
             ledgeTimer = LEDGETIMER;
+            _instance = this;
         }
 
         public void Jump()
         {
             if (!hasJumped)
             {
-                Velocity = new Vector2(Velocity.X, -JumpHeight);
+                Velocity = new Vector2(Velocity.X, -JumpStrength);
                 hasJumped = true;
                 isGrounded = false;
             }
@@ -144,6 +158,10 @@ namespace TheDeserter
             {
                 Velocity *= new Vector2(Math.Abs(MovementSpeed / Velocity.X), 1);
             }
+            if(Math.Abs(Velocity.Y) > JumpStrength)
+            {
+                Velocity *= new Vector2(1, Math.Abs(JumpStrength / Velocity.Y));
+            }
         }
 
         private void CheckWorldConstraints()
@@ -168,6 +186,9 @@ namespace TheDeserter
 
         private void CheckNeighbouringTiles(GameTime gameTime)
         {
+            Debug.WriteLine("Velocity.X = " + Velocity.X * (float)gameTime.ElapsedGameTime.Milliseconds / 1000);
+            Debug.WriteLine("Velocity.Y = " + Velocity.Y * (float)gameTime.ElapsedGameTime.Milliseconds / 1000);
+
             if (World.CollisionTileMap.LayerTileMap[(int)Math.Floor(TilePosition.X), (int)Math.Floor(TilePosition.Y) + 1].CheckCollision(Position))
             {
                 isGrounded = true;

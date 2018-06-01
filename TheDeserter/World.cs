@@ -74,9 +74,11 @@ namespace TheDeserter
 
             foreach (var tml in tileMapLayers)
             {
-                if(tml.Attribute("name").Value == "Collisions")
+                if(tml.Attribute("name").Value == "Colliders")
                 {
                     CollisionTileMap = new CollisionTileMap(tml, tileset);
+                    CollisionTileMap.LoadData();
+
                 }
                 else
                 {
@@ -89,7 +91,6 @@ namespace TheDeserter
             {
                 tm.LoadData();
             }
-            CollisionTileMap.LoadData();
         }
 
         public void DrawLayers(SpriteBatch spriteBatch)

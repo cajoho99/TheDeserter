@@ -7,11 +7,19 @@ using System.Threading.Tasks;
 
 namespace TheDeserter
 {
+    /// <summary>
+    /// Manages all the inputs
+    /// </summary>
     class InputManager
     {
+        //Gets the keyboard state
         KeyboardState currentKeyState, previousKeyState;
 
         #region Singleton
+        /// <summary>
+        /// Singelton that makes it possible to access this class from anywhere
+        /// </summary>
+        
         private static InputManager _instance;
         public static InputManager Instance
         {
@@ -26,12 +34,20 @@ namespace TheDeserter
         }
         #endregion
 
+        /// <summary>
+        /// The update function of the input manager
+        /// </summary>
         public void Update()
         {
             previousKeyState = currentKeyState;
             currentKeyState = Keyboard.GetState();
         }
 
+        /// <summary>
+        /// Checks if the key(s) have been pressed
+        /// </summary>
+        /// <param name="keys">The keys that will be checked</param>
+        /// <returns>state of button</returns>
         public bool KeyPressed(params Keys[] keys)
         {
             foreach(Keys key in keys)
@@ -43,6 +59,12 @@ namespace TheDeserter
             }
             return false;
         }
+
+        /// <summary>
+        /// Checks if the key(s) have been released
+        /// </summary>
+        /// <param name="keys">The keys that will be checked</param>
+        /// <returns>state of the button</returns>
         public bool KeyReleased(params Keys[] keys)
         {
             foreach (Keys key in keys)
@@ -54,6 +76,12 @@ namespace TheDeserter
             }
             return false;
         }
+
+        /// <summary>
+        /// Checks if the key(s) are being held down
+        /// </summary>
+        /// <param name="keys">The keys that will be checked</param>
+        /// <returns>State of the keys</returns>
         public bool KeyDown(params Keys[] keys)
         {
             foreach (Keys key in keys)

@@ -10,22 +10,34 @@ namespace TheDeserter
     /// </summary>
     public class Game1 : Game
     {
+        #region Variables
+        //The main graphics device manager in the game
         GraphicsDeviceManager graphics;
+        //The main spritebatch for the game
         SpriteBatch spriteBatch;
+        //The target image that is rendered to
         RenderTarget2D target;
 
+        //The main character player object
         Player mainCharacter;
 
+        //The background color
         private Color backgroundColor;
 
+        //The main camera
+        Camera mainCamera;
 
+        //The game world
         private World world;
 
+        #endregion
+        /// <summary>
+        /// Constructor for the main game object
+        /// </summary>
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
         }
 
         /// <summary>
@@ -36,7 +48,10 @@ namespace TheDeserter
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            //Set the starting location of the game to the top left corner and removes the title
+            var form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(this.Window.Handle);
+            form.Location = new System.Drawing.Point(0, 0);
+            form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 
             base.Initialize();
         }
@@ -49,23 +64,30 @@ namespace TheDeserter
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            //Initializing the World
             world = new World();
-            world.LoadWorld("level1", Content);
+            world.LoadWorld("level2", Content);
 
            
-            
+            //Setting the render target
             target = new RenderTarget2D(GraphicsDevice, World.MapWidth * 16, World.MapHeight * 16);
-            graphics.PreferredBackBufferHeight = 400;
-            graphics.PreferredBackBufferWidth = 800;
+            //Changing the window size
+            graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            //Uncomment this for true fullscreen
+            //graphics.IsFullScreen = true; 
+            //Applies all the graphic changes
             graphics.ApplyChanges();
 
+            //Initialize the camera
+            mainCamera = new Camera();
 
+            //Initialize the Player
+            mainCharacter = new Player(Content.Load<Texture2D>("playerIdle"), Content.Load<Texture2D>("runningPlayer"), new Vector2(3, 3) * Constants.TileSize);
 
-            mainCharacter = new Player(Content.Load<Texture2D>("playerIdle"), Content.Load<Texture2D>("runningPlayer"), new Vector2(2, 2) * Constants.TileSize);
-
+            //assign the background color
             backgroundColor = new Color(29, 33, 45);
 
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -74,7 +96,6 @@ namespace TheDeserter
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -84,17 +105,21 @@ namespace TheDeserter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            //Exits the game on esc...
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            //Update the Input manager
             InputManager.Instance.Update();
 
+            //Update the main character
             mainCharacter.MovementInput();
             mainCharacter.Move(gameTime);
             mainCharacter.Update(gameTime);
-            
-            // TODO: Add your update logic here
 
+            //Update the camera
+            mainCamera.Update(GraphicsDevice);
+            
             base.Update(gameTime);
         }
 
@@ -104,15 +129,21 @@ namespace TheDeserter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            //Drawing to the image
             GraphicsDevice.SetRenderTarget(target);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+            // Draw with the camera
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, mainCamera.Transform); 
             GraphicsDevice.Clear(backgroundColor);
-            world.DrawLayers(spriteBatch);
-            mainCharacter.Draw(spriteBatch, gameTime);
+            world.DrawLayers(spriteBatch); // Draw the world
+            mainCharacter.Draw(spriteBatch, gameTime); //Draw the main character
             spriteBatch.End();
             GraphicsDevice.SetRenderTarget(null);
+
+            //Draw the background color
+            GraphicsDevice.Clear(backgroundColor);
+            //Draw the target to the screen
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-            spriteBatch.Draw(target, new Rectangle(0, 0, /* GraphicsDevice.DisplayMode.Width*/ 800, /* GraphicsDevice.DisplayMode.Height*/ 400), Color.White);
+            spriteBatch.Draw(target, new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
